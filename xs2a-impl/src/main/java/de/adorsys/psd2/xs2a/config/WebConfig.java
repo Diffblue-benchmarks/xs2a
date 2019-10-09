@@ -16,8 +16,8 @@
 
 package de.adorsys.psd2.xs2a.config;
 
-import de.adorsys.psd2.mapper.Xs2aObjectMapper;
 import de.adorsys.psd2.consent.api.service.TppStopListService;
+import de.adorsys.psd2.mapper.Xs2aObjectMapper;
 import de.adorsys.psd2.xs2a.component.PaymentTypeEnumConverter;
 import de.adorsys.psd2.xs2a.component.logger.request.RequestResponseLogger;
 import de.adorsys.psd2.xs2a.config.converter.MappingJackson2TextMessageConverter;
@@ -85,9 +85,9 @@ public class WebConfig extends WebMvcConfigurerAdapter {
         // The interceptors are executed in the order in which they are declared for preHandle(...) and vice versa for postHandle(...).
         // Logging interceptors:
         registry.addInterceptor(new AccountLoggingInterceptor(tppService, requestProviderService)).addPathPatterns(ACCOUNTS_PATH);
-        registry.addInterceptor(new ConsentLoggingInterceptor(tppService, redirectIdService, requestProviderService)).addPathPatterns(CONSENTS_PATH);
+        registry.addInterceptor(new ConsentLoggingInterceptor(tppService, redirectIdService, requestProviderService, xs2aObjectMapper)).addPathPatterns(CONSENTS_PATH);
         registry.addInterceptor(new FundsConfirmationLoggingInterceptor(tppService, requestProviderService)).addPathPatterns(FUNDS_CONFIRMATION_PATH);
-        registry.addInterceptor(new PaymentLoggingInterceptor(tppService, redirectIdService, requestProviderService)).addPathPatterns(SINGLE_PAYMENTS_PATH, BULK_PAYMENTS_PATH, PERIODIC_PAYMENTS_PATH);
+        registry.addInterceptor(new PaymentLoggingInterceptor(tppService, redirectIdService, requestProviderService, xs2aObjectMapper)).addPathPatterns(SINGLE_PAYMENTS_PATH, BULK_PAYMENTS_PATH, PERIODIC_PAYMENTS_PATH);
         registry.addInterceptor(new SigningBasketLoggingInterceptor(tppService, redirectIdService, requestProviderService)).addPathPatterns(SIGNING_BASKETS_PATH);
 
         registry.addInterceptor(new RequestResponseLoggingInterceptor(requestResponseLogger, requestProviderService)).addPathPatterns(getAllXs2aEndpointPaths());

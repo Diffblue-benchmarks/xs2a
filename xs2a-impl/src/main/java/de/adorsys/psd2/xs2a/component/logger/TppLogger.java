@@ -66,6 +66,13 @@ public class TppLogger {
             return getThis();
         }
 
+        public T withParam(String paramName, String paramValue, boolean present) {
+            if (!present) {
+                return getThis();
+            }
+            return withParam(paramName, paramValue);
+        }
+
         public void perform() {
             String logMessageParams = logParams.entrySet()
                                           .stream()

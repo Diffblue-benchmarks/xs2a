@@ -16,17 +16,23 @@
 
 package de.adorsys.psd2.xs2a.web.interceptor.logging;
 
+import de.adorsys.psd2.mapper.Xs2aObjectMapper;
+import de.adorsys.psd2.xs2a.component.MultiReadHttpServletResponse;
 import de.adorsys.psd2.xs2a.component.logger.TppLogger;
 import de.adorsys.psd2.xs2a.service.RedirectIdService;
 import de.adorsys.psd2.xs2a.service.RequestProviderService;
 import de.adorsys.psd2.xs2a.service.TppService;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.ArrayUtils;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerMapping;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.Map;
 import java.util.Optional;
 
@@ -37,6 +43,7 @@ public class ConsentLoggingInterceptor extends HandlerInterceptorAdapter {
     private final TppService tppService;
     private final RedirectIdService redirectIdService;
     private final RequestProviderService requestProviderService;
+    private final Xs2aObjectMapper objectMapper;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
@@ -54,6 +61,31 @@ public class ConsentLoggingInterceptor extends HandlerInterceptorAdapter {
             .perform();
 
         return true;
+    }
+
+    @Override
+    public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, @Nullable ModelAndView modelAndView) {
+        MultiReadHttpServletResponse multiReadHttpServletResponse = (MultiReadHttpServletResponse) response;
+        byte[] content = multiReadHttpServletResponse.getCachedContent();
+
+        if (ArrayUtils.isEmpty(content)) {
+            return;
+        }
+
+        Map<String, String> responseVariables;
+        try {
+            responseVariables = objectMapper.readValue(content, Map.class);
+        } catch (IOException exception) {
+            return;
+        }
+
+        String consentStatus = responseVariables.get("consentStatus");
+        String scaStatus = responseVariables.get("scaStatus");
+
+        TppLogger.logResponse(response)
+            .withParam("consentStatus", consentStatus, consentStatus != null)
+            .withParam("scaStatus", scaStatus, scaStatus != null)
+            .perform();
     }
 
     @Override

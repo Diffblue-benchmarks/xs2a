@@ -15,6 +15,7 @@
 * Use PaymentType enum instead of string values in Xs2aCreatePisAuthorisationRequest and Xs2aUpdatePisCommonPaymentPsuDataRequest
 * Added special mapping for `dayOfExecution` in periodic payments
 * Remove JsonReader duplicates
+* Add statuses to logs
 
 == Add integration test for embedded mode for XS2A
 
@@ -82,3 +83,9 @@ From now on, while creating periodic payments, there is a possibility to pass th
 == Remove JsonReader duplicates
 
 From now on there is only one JsonReader class located in json-reader module.
+
+== Add statuses to logs
+
+From now on, all responses from endpoints starting with following paths: `/v1/consents/`, `/v1/payments/`,
+`/v1/periodic-payments/` or `/v1/bulk-payments/` get checked for existing `transactionStatus` and `consentStatus` fields,
+in case of Payment, or `consenstStatus` and `scaStatus` fields, in case of Consent, and if existent, they get logged.

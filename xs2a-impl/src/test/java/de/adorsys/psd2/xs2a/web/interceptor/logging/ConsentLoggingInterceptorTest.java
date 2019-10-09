@@ -16,6 +16,10 @@
 
 package de.adorsys.psd2.xs2a.web.interceptor.logging;
 
+import de.adorsys.psd2.mapper.Xs2aObjectMapper;
+import de.adorsys.psd2.xs2a.component.MultiReadHttpServletResponse;
+import de.adorsys.psd2.xs2a.core.consent.ConsentStatus;
+import de.adorsys.psd2.xs2a.core.sca.ScaStatus;
 import de.adorsys.psd2.xs2a.core.tpp.TppInfo;
 import de.adorsys.psd2.xs2a.service.RedirectIdService;
 import de.adorsys.psd2.xs2a.service.RequestProviderService;
@@ -24,20 +28,20 @@ import de.adorsys.xs2a.reader.JsonReader;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.web.servlet.HandlerMapping;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ConsentLoggingInterceptorTest {
@@ -47,20 +51,24 @@ public class ConsentLoggingInterceptorTest {
     private static final String X_REQUEST_ID_HEADER_NAME = "x-request-id";
     private static final String X_REQUEST_ID_HEADER_VALUE = "222";
     private static final String REDIRECT_ID = "redirect-id";
+    private static final ConsentStatus CONSENT_STATUS = ConsentStatus.RECEIVED;
+    private static final ScaStatus SCA_STATUS = ScaStatus.RECEIVED;
     private static final UUID INTERNAL_REQUEST_ID = UUID.fromString("b571c834-4eb1-468f-91b0-f5e83589bc22");
 
-    @InjectMocks
     private ConsentLoggingInterceptor interceptor;
     @Mock
     private TppService tppService;
     @Mock
     private HttpServletRequest request;
     @Mock
-    private HttpServletResponse response;
+    private MultiReadHttpServletResponse response;
     @Mock
     private RedirectIdService redirectIdService;
     @Mock
     private RequestProviderService requestProviderService;
+    @Spy
+    private Xs2aObjectMapper objectMapper = new Xs2aObjectMapper();
+
 
     private JsonReader jsonReader = new JsonReader();
 
@@ -69,6 +77,7 @@ public class ConsentLoggingInterceptorTest {
         when(tppService.getTppInfo()).thenReturn(jsonReader.getObjectFromFile(TPP_INFO_JSON, TppInfo.class));
         when(response.getHeader(X_REQUEST_ID_HEADER_NAME)).thenReturn(X_REQUEST_ID_HEADER_VALUE);
         when(requestProviderService.getInternalRequestId()).thenReturn(INTERNAL_REQUEST_ID);
+        interceptor = new ConsentLoggingInterceptor(tppService, redirectIdService, requestProviderService, objectMapper);
     }
 
     @Test
@@ -106,6 +115,38 @@ public class ConsentLoggingInterceptorTest {
     }
 
     @Test
+    public void postHandle_emptyContent() throws IOException {
+        when(response.getCachedContent()).thenReturn(null);
+
+        interceptor.postHandle(request, response, null, null);
+
+        verify(response).getCachedContent();
+        verify(objectMapper, times(0)).readValue((byte[]) null, Map.class);
+    }
+
+    @Test
+    public void postHandle_objectMapper_failed() throws IOException {
+        byte[] bytes = jsonReader.getBytesFromFile("json/web/interceptor/logging/wrong-response.json");
+        when(response.getCachedContent()).thenReturn(bytes);
+
+        interceptor.postHandle(request, response, null, null);
+
+        verify(response).getCachedContent();
+        verify(objectMapper).readValue(bytes, Map.class);
+    }
+
+    @Test
+    public void postHandle_successful() throws IOException {
+        byte[] bytes = jsonReader.getBytesFromFile("json/web/interceptor/logging/consentStatus-response.json");
+        when(response.getCachedContent()).thenReturn(bytes);
+
+        interceptor.postHandle(request, response, null, null);
+
+        verify(response).getCachedContent();
+        verify(objectMapper).readValue(bytes, Map.class);
+    }
+
+    @Test
     public void afterCompletion_success() {
         // Given
         when(response.getStatus()).thenReturn(HttpServletResponse.SC_OK);
@@ -118,5 +159,12 @@ public class ConsentLoggingInterceptorTest {
         verify(response).getHeader(eq(X_REQUEST_ID_HEADER_NAME));
         verify(response).getStatus();
         verify(redirectIdService).getRedirectId();
+    }
+
+    private Map<String, String> buildMap() {
+        Map<String, String> map = new HashMap<>();
+        map.put("consentStatus", CONSENT_STATUS.name());
+        map.put("scaStatus", SCA_STATUS.name());
+        return map;
     }
 }
