@@ -14,26 +14,27 @@
  * limitations under the License.
  */
 
-package de.adorsys.psd2.xs2a.spi.domain;
+package de.adorsys.psd2.xs2a.util.reader;
 
 import de.adorsys.psd2.xs2a.core.tpp.TppInfo;
+import de.adorsys.psd2.xs2a.spi.domain.SpiContextData;
 import de.adorsys.psd2.xs2a.spi.domain.psu.SpiPsuData;
-import lombok.RequiredArgsConstructor;
-import lombok.Value;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
 
-/**
- * This object represents known Context of call, provided by this or previous requests in scope of one process (e.g. one payment or one AIS consent)
- */
-@Value
-@NotNull
-@RequiredArgsConstructor
-public class SpiContextData {
-    private SpiPsuData psuData;
-    private TppInfo tppInfo;
-    private UUID xRequestId;
-    private UUID internalRequestId;
-    private String authorisation;
+public class TestSpiDataProvider {
+
+    private static final UUID X_REQUEST_ID = UUID.randomUUID();
+    private static final String AUTHORISATION = "Bearer 1111111";
+
+    public static SpiContextData getSpiContextData() {
+        return new SpiContextData(
+            new SpiPsuData("psuId", "psuIdType", "psuCorporateId", "psuCorporateIdType", "psuIpAddress"),
+            new TppInfo(),
+            X_REQUEST_ID,
+            UUID.randomUUID(),
+            AUTHORISATION
+        );
+    }
+
 }

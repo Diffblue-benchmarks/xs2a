@@ -35,6 +35,8 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class RequestProviderService {
+
+    private static final String AUTHORISATION_HEADER = "authorization";
     private static final String TPP_REDIRECT_PREFERRED_HEADER = "tpp-redirect-preferred";
     private static final String X_REQUEST_ID_HEADER = "x-request-id";
     private static final String PSU_ID_HEADER = "psu-id";
@@ -114,6 +116,10 @@ public class RequestProviderService {
 
     public String getTppNokRedirectURI() {
         return getHeader(Xs2aHeaderConstant.TPP_NOK_REDIRECT_URI);
+    }
+
+    public String getAuthorisation() {
+        return getHeader(AUTHORISATION_HEADER);
     }
 
     private String getHeader(String headerName) {
