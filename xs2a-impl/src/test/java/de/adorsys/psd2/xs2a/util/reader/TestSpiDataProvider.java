@@ -25,14 +25,20 @@ import java.util.UUID;
 public class TestSpiDataProvider {
 
     private static final UUID X_REQUEST_ID = UUID.randomUUID();
+    private static final UUID INTERNAL_REQUEST_ID = UUID.randomUUID();
     private static final String AUTHORISATION = "Bearer 1111111";
+    private static final String PSU_ID = "psuId";
+    private static final String PSU_ID_TYPE = "psuIdType";
+    private static final String PSU_CORPORATE_ID = "psuCorporateId";
+    private static final String PSU_CORPORATE_ID_TYPE = "psuCorporateIdType";
+    private static final String PSU_IP_ADDRESS = "psuIpAddress";
 
     public static SpiContextData getSpiContextData() {
         return new SpiContextData(
-            new SpiPsuData("psuId", "psuIdType", "psuCorporateId", "psuCorporateIdType", "psuIpAddress"),
+            new SpiPsuData(PSU_ID, PSU_ID_TYPE, PSU_CORPORATE_ID, PSU_CORPORATE_ID_TYPE, PSU_IP_ADDRESS),
             new TppInfo(),
             X_REQUEST_ID,
-            UUID.randomUUID(),
+            INTERNAL_REQUEST_ID,
             AUTHORISATION
         );
     }
