@@ -48,6 +48,7 @@ import de.adorsys.psd2.xs2a.core.exception.RedirectUrlIsExpiredException;
 import de.adorsys.psd2.xs2a.core.pis.PaymentAuthorisationType;
 import de.adorsys.psd2.xs2a.core.profile.AdditionalInformationAccess;
 import de.adorsys.psd2.xs2a.core.psu.PsuIdData;
+import de.adorsys.psd2.xs2a.core.sca.AuthenticationData;
 import de.adorsys.psd2.xs2a.core.sca.ScaStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -149,7 +150,7 @@ public class CmsPsuAisServiceInternal implements CmsPsuAisService {
     @Transactional
     public boolean updateAuthorisationStatus(@NotNull PsuIdData psuIdData, @NotNull String consentId,
                                              @NotNull String authorisationId, @NotNull ScaStatus status,
-                                             @NotNull String instanceId) throws AuthorisationIsExpiredException {
+                                             @NotNull String instanceId, AuthenticationData authenticationData) throws AuthorisationIsExpiredException {
         Optional<AisConsent> actualAisConsent = getActualAisConsent(consentId, instanceId);
 
         if (!actualAisConsent.isPresent()) {
@@ -158,7 +159,7 @@ public class CmsPsuAisServiceInternal implements CmsPsuAisService {
         }
 
         return getAuthorisationByExternalId(authorisationId, instanceId)
-                   .map(auth -> updateScaStatus(status, auth))
+                   .map(authorisation -> updateScaStatusAndAuthenticationData(status, authorisation, authenticationData))
                    .orElseGet(() -> {
                        log.info("Authorisation ID [{}], Instance ID: [{}]. Update authorisation status failed, because authorisation not found",
                                 authorisationId, instanceId);
@@ -379,13 +380,17 @@ public class CmsPsuAisServiceInternal implements CmsPsuAisService {
         return true;
     }
 
-    private boolean updateScaStatus(@NotNull ScaStatus status, AisConsentAuthorization authorisation) {
+    private boolean updateScaStatusAndAuthenticationData(@NotNull ScaStatus status, AisConsentAuthorization authorisation, AuthenticationData authenticationData) {
         if (authorisation.getScaStatus().isFinalisedStatus()) {
-            log.info("Authorisation ID [{}], SCA status [{}]. Update authorisation status failed in updateScaStatus method because authorisation has finalised status.", authorisation.getId(),
+            log.info("Authorisation ID [{}], SCA status [{}]. Update authorisation status failed in updateScaStatusAndAuthenticationData method because authorisation has finalised status.", authorisation.getId(),
                      authorisation.getScaStatus().getValue());
             return false;
         }
         authorisation.setScaStatus(status);
+        if (authenticationData != null) {
+            authorisation.setAuthenticationMethodId(authenticationData.getAuthenticationMethodId());
+            authorisation.setScaAuthenticationData(authenticationData.getAuthenticationData());
+        }
         return aisConsentAuthorisationRepository.save(authorisation) != null;
     }
 

@@ -39,6 +39,7 @@ import de.adorsys.psd2.xs2a.core.exception.RedirectUrlIsExpiredException;
 import de.adorsys.psd2.xs2a.core.pis.PaymentAuthorisationType;
 import de.adorsys.psd2.xs2a.core.pis.TransactionStatus;
 import de.adorsys.psd2.xs2a.core.psu.PsuIdData;
+import de.adorsys.psd2.xs2a.core.sca.AuthenticationData;
 import de.adorsys.psd2.xs2a.core.sca.ScaStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -172,7 +173,8 @@ public class CmsPsuPisServiceInternal implements CmsPsuPisService {
     @Override
     @Transactional
     public boolean updateAuthorisationStatus(@NotNull PsuIdData psuIdData, @NotNull String paymentId,
-                                             @NotNull String authorisationId, @NotNull ScaStatus status, @NotNull String instanceId) throws AuthorisationIsExpiredException {
+                                             @NotNull String authorisationId, @NotNull ScaStatus status,
+                                             @NotNull String instanceId, AuthenticationData authenticationData) throws AuthorisationIsExpiredException {
         Optional<PisAuthorization> pisAuthorisation = getAuthorisationByExternalId(authorisationId, instanceId);
 
         if (!pisAuthorisation.isPresent()) {
@@ -192,7 +194,7 @@ public class CmsPsuPisServiceInternal implements CmsPsuPisService {
             return false;
         }
 
-        return updateAuthorisationStatusAndSaveAuthorisation(pisAuthorisation.get(), status);
+        return updateAuthorisationStatusAndSaveAuthorisation(pisAuthorisation.get(), status, authenticationData);
     }
 
     @Override
@@ -267,13 +269,19 @@ public class CmsPsuPisServiceInternal implements CmsPsuPisService {
                    });
     }
 
-    private boolean updateAuthorisationStatusAndSaveAuthorisation(PisAuthorization pisAuthorisation, ScaStatus status) {
+    private boolean updateAuthorisationStatusAndSaveAuthorisation(PisAuthorization pisAuthorisation, ScaStatus status,
+                                                                  AuthenticationData authenticationData) {
         if (pisAuthorisation.getScaStatus().isFinalisedStatus()) {
             log.info("Authorisation ID [{}], SCA status: [{}]. Update authorisation status failed in updateAuthorisationStatusAndSaveAuthorisation method, " +
                          "because authorisation has finalised status", pisAuthorisation.getExternalId(), pisAuthorisation.getScaStatus().getValue());
             return false;
         }
         pisAuthorisation.setScaStatus(status);
+        if (authenticationData != null) {
+            pisAuthorisation.setChosenScaMethod(authenticationData.getAuthenticationMethodId());
+            pisAuthorisation.setScaAuthenticationData(authenticationData.getAuthenticationData());
+        }
+
         return Optional.ofNullable(pisAuthorisationRepository.save(pisAuthorisation))
                    .isPresent();
     }
