@@ -27,16 +27,17 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class Xs2aUpdatePisCommonPaymentPsuDataRequest implements UpdateAuthorisationRequest {
+    private PsuIdData psuData;
     private String paymentId;
     private String authorisationId;
-    private PsuIdData psuData;
-    private String password;
-    private String authenticationMethodId;
+
     private ScaStatus scaStatus;
-    private PaymentType paymentService;
-    private String scaAuthenticationData;
-    private String paymentProduct;
     private boolean updatePsuIdentification;
+    private String authenticationMethodId;
+    private String scaAuthenticationData;
+    private String password;
+    private String paymentProduct;
+    private PaymentType paymentService;
 
     public Xs2aUpdatePisCommonPaymentPsuDataRequest(Xs2aCreatePisAuthorisationRequest createRequest, String authorisationId) {
         this.psuData = createRequest.getPsuData();

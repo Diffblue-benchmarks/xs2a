@@ -34,8 +34,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 public class Xs2aUpdatePisCommonPaymentPsuDataResponse implements AuthorisationResponse, CancellationAuthorisationResponse {
-    private ErrorHolder errorHolder;
-    private String psuMessage;
+
     private String paymentId;
     private String authorisationId;
 
@@ -44,7 +43,10 @@ public class Xs2aUpdatePisCommonPaymentPsuDataResponse implements AuthorisationR
     private Xs2aAuthenticationObject chosenScaMethod;
     private ChallengeData challengeData;
     private Links links = new Links();
+    private String psuMessage;
     private PsuIdData psuData;
+
+    private ErrorHolder errorHolder;
 
     public Xs2aUpdatePisCommonPaymentPsuDataResponse(ScaStatus scaStatus, String paymentId, String authorisationId, PsuIdData psuData) {
         this.scaStatus = scaStatus;
