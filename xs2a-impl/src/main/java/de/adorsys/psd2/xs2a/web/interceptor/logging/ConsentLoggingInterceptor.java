@@ -83,8 +83,8 @@ public class ConsentLoggingInterceptor extends HandlerInterceptorAdapter {
         String scaStatus = responseVariables.get("scaStatus");
 
         TppLogger.logResponse(response)
-            .withParam("consentStatus", consentStatus, consentStatus != null)
-            .withParam("scaStatus", scaStatus, scaStatus != null)
+            .withParam("consentStatus", consentStatus)
+            .withParam("scaStatus", scaStatus)
             .perform();
     }
 

@@ -83,8 +83,8 @@ public class PaymentLoggingInterceptor extends HandlerInterceptorAdapter {
         String scaStatus = responseVariables.get("scaStatus");
 
         TppLogger.logResponse(response)
-            .withParam("transactionStatus", transactionStatus, transactionStatus != null)
-            .withParam("scaStatus", scaStatus, scaStatus != null)
+            .withParam("transactionStatus", transactionStatus)
+            .withParam("scaStatus", scaStatus)
             .perform();
 
     }
