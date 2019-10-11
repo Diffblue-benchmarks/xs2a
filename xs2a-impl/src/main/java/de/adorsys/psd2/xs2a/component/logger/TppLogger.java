@@ -63,7 +63,7 @@ public class TppLogger {
         }
 
         public T withParam(String paramName, String paramValue) {
-            if (StringUtils.isNotBlank(paramName)) {
+            if (StringUtils.isNotBlank(paramValue)) {
                 putLogParameter(paramName, paramValue);
             }
             return getThis();
