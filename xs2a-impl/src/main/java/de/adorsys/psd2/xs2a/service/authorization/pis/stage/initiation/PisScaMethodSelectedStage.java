@@ -75,7 +75,7 @@ public class PisScaMethodSelectedStage extends PisScaStage<Xs2aUpdatePisCommonPa
         PaymentType paymentType = pisAuthorisationResponse.getPaymentType();
         String paymentProduct = pisAuthorisationResponse.getPaymentProduct();
         SpiPayment payment = mapToSpiPayment(pisAuthorisationResponse, paymentType, paymentProduct);
-        PsuIdData psuData = extractPsuIdData(request, false);
+        PsuIdData psuData = extractPsuIdData(request, pisAuthorisationResponse);
         PaymentSpi paymentSpi = getPaymentService(pisAuthorisationResponse, paymentType);
         String authorisationId = request.getAuthorisationId();
         String paymentId = request.getPaymentId();

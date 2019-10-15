@@ -120,7 +120,7 @@ public class PisCancellationScaReceivedAuthorisationStage extends PisScaStage<Xs
     }
 
     private Xs2aUpdatePisCommonPaymentPsuDataResponse applyAuthorisation(Xs2aUpdatePisCommonPaymentPsuDataRequest request, GetPisAuthorisationResponse pisAuthorisationResponse) {
-        PsuIdData psuData = extractPsuIdData(request, true);
+        PsuIdData psuData = extractPsuIdData(request, pisAuthorisationResponse);
         String authorisationId = request.getAuthorisationId();
         String paymentId = request.getPaymentId();
         PaymentType paymentType = pisAuthorisationResponse.getPaymentType();

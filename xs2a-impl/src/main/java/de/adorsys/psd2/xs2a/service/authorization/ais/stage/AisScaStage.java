@@ -35,13 +35,14 @@ import lombok.RequiredArgsConstructor;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 /**
  * Abstract class to be extended by each stage of updating consent PSU data workflow
  */
 @RequiredArgsConstructor
-public abstract class AisScaStage<T, R> implements Function<T, R> {
+public abstract class AisScaStage<T, U, R> implements BiFunction<T, U, R> {
     protected final Xs2aAisConsentService aisConsentService;
     protected final SpiAspspConsentDataProviderFactory aspspConsentDataProviderFactory;
     protected final AisConsentSpi aisConsentSpi;
@@ -68,15 +69,9 @@ public abstract class AisScaStage<T, R> implements Function<T, R> {
         return String.join(", ", textMessages);
     }
 
-    protected PsuIdData extractPsuIdData(UpdateConsentPsuDataReq request) {
+    protected PsuIdData extractPsuIdData(UpdateConsentPsuDataReq request, AccountConsentAuthorization authorisationResponse) {
         PsuIdData psuDataInRequest = request.getPsuData();
-        if (isPsuExist(psuDataInRequest)) {
-            return psuDataInRequest;
-        }
-
-        return aisConsentService.getAccountConsentAuthorizationById(request.getAuthorizationId(), request.getConsentId())
-                   .map(AccountConsentAuthorization::getPsuIdData)
-                   .orElse(psuDataInRequest);
+        return isPsuExist(psuDataInRequest) ? psuDataInRequest : authorisationResponse.getPsuIdData();
     }
 
     protected boolean isPsuExist(PsuIdData psuIdData) {

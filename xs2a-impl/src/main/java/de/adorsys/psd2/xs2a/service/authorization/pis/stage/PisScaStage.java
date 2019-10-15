@@ -100,26 +100,15 @@ public abstract class PisScaStage<T, U, R> implements BiFunction<T, U, R> {
         return spiPaymentInfo;
     }
 
-    protected PsuIdData extractPsuIdData(Xs2aUpdatePisCommonPaymentPsuDataRequest request, boolean paymentCancellation) {
+    protected PsuIdData extractPsuIdData(Xs2aUpdatePisCommonPaymentPsuDataRequest request,
+                                         GetPisAuthorisationResponse authorisationResponse) {
         PsuIdData psuDataInRequest = request.getPsuData();
-        if (isPsuExist(psuDataInRequest)) {
-            return psuDataInRequest;
-        }
-
-        return getGetPisAuthorisationResponse(request.getAuthorisationId(), paymentCancellation)
-                   .map(GetPisAuthorisationResponse::getPsuIdData)
-                   .orElse(psuDataInRequest);
+        return isPsuExist(psuDataInRequest) ? psuDataInRequest : authorisationResponse.getPsuIdData();
     }
 
     protected boolean isPsuExist(PsuIdData psuIdData) {
         return Optional.ofNullable(psuIdData)
                    .map(PsuIdData::isNotEmpty)
                    .orElse(false);
-    }
-
-    private Optional<GetPisAuthorisationResponse> getGetPisAuthorisationResponse(String authorisationId, boolean paymentCancellation) {
-        return paymentCancellation
-                   ? pisCommonPaymentServiceEncrypted.getPisCancellationAuthorisationById(authorisationId)
-                   : pisCommonPaymentServiceEncrypted.getPisAuthorisationById(authorisationId);
     }
 }

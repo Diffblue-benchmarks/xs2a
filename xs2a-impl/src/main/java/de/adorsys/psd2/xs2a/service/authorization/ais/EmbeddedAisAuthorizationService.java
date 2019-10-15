@@ -103,8 +103,8 @@ public class EmbeddedAisAuthorizationService implements AisAuthorizationService 
      */
     @Override
     public UpdateConsentPsuDataResponse updateConsentPsuData(UpdateConsentPsuDataReq request, AccountConsentAuthorization consentAuthorization) {
-        AisScaStage<UpdateConsentPsuDataReq, UpdateConsentPsuDataResponse> service = scaStageAuthorisationFactory.getService(SERVICE_PREFIX + SEPARATOR + consentAuthorization.getScaStatus().name());
-        UpdateConsentPsuDataResponse response = service.apply(request);
+        AisScaStage<UpdateConsentPsuDataReq, AccountConsentAuthorization, UpdateConsentPsuDataResponse> service = scaStageAuthorisationFactory.getService(SERVICE_PREFIX + SEPARATOR + consentAuthorization.getScaStatus().name());
+        UpdateConsentPsuDataResponse response = service.apply(request, consentAuthorization);
 
         if (response.hasError()) {
             log.info("InR-ID: [{}], X-Request-ID: [{}], Consent-ID [{}], Authorisation-ID [{}]. Update consent authorisation failed. Error msg: {}.",

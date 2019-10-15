@@ -79,7 +79,7 @@ public class PisCancellationDecoupledScaReceivedAuthorisationStage extends PisSc
 
     @Override
     public Xs2aUpdatePisCommonPaymentPsuDataResponse apply(Xs2aUpdatePisCommonPaymentPsuDataRequest request, GetPisAuthorisationResponse pisAuthorisationResponse) {
-        PsuIdData psuData = extractPsuIdData(request, true);
+        PsuIdData psuData = extractPsuIdData(request, pisAuthorisationResponse);
         request.setPsuData(psuData);
         PaymentType paymentType = pisAuthorisationResponse.getPaymentType();
         String paymentProduct = pisAuthorisationResponse.getPaymentProduct();

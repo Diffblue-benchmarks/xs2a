@@ -97,7 +97,7 @@ public class PisScaReceivedAuthorisationStage extends PisScaStage<Xs2aUpdatePisC
     }
 
     private Xs2aUpdatePisCommonPaymentPsuDataResponse applyAuthorisation(Xs2aUpdatePisCommonPaymentPsuDataRequest request, GetPisAuthorisationResponse pisAuthorisationResponse) {
-        PsuIdData psuData = extractPsuIdData(request, false);
+        PsuIdData psuData = extractPsuIdData(request, pisAuthorisationResponse);
         PaymentType paymentType = pisAuthorisationResponse.getPaymentType();
         String paymentProduct = pisAuthorisationResponse.getPaymentProduct();
         SpiPayment payment = mapToSpiPayment(pisAuthorisationResponse, paymentType, paymentProduct);

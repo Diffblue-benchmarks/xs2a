@@ -22,6 +22,7 @@ import de.adorsys.psd2.xs2a.core.psu.PsuIdData;
 import de.adorsys.psd2.xs2a.core.sca.ChallengeData;
 import de.adorsys.psd2.xs2a.core.sca.ScaStatus;
 import de.adorsys.psd2.xs2a.domain.consent.AccountConsent;
+import de.adorsys.psd2.xs2a.domain.consent.AccountConsentAuthorization;
 import de.adorsys.psd2.xs2a.domain.consent.UpdateConsentPsuDataReq;
 import de.adorsys.psd2.xs2a.domain.consent.UpdateConsentPsuDataResponse;
 import de.adorsys.psd2.xs2a.exception.MessageError;
@@ -52,7 +53,7 @@ import static de.adorsys.psd2.xs2a.domain.TppMessageInformation.of;
 
 @Slf4j
 @Service("AIS_PSUAUTHENTICATED")
-public class AisScaMethodSelectedStage extends AisScaStage<UpdateConsentPsuDataReq, UpdateConsentPsuDataResponse> {
+public class AisScaMethodSelectedStage extends AisScaStage<UpdateConsentPsuDataReq, AccountConsentAuthorization, UpdateConsentPsuDataResponse> {
     private final SpiContextDataProvider spiContextDataProvider;
     private final CommonDecoupledAisService commonDecoupledAisService;
     private final RequestProviderService requestProviderService;
@@ -82,7 +83,7 @@ public class AisScaMethodSelectedStage extends AisScaStage<UpdateConsentPsuDataR
      * @return UpdateConsentPsuDataResponse as a result of updating process
      */
     @Override
-    public UpdateConsentPsuDataResponse apply(UpdateConsentPsuDataReq request) {
+    public UpdateConsentPsuDataResponse apply(UpdateConsentPsuDataReq request, AccountConsentAuthorization authorisationResponse) {
         String consentId = request.getConsentId();
         Optional<AccountConsent> accountConsentOptional = aisConsentService.getAccountConsentById(consentId);
         if (!accountConsentOptional.isPresent()) {
@@ -92,7 +93,7 @@ public class AisScaMethodSelectedStage extends AisScaStage<UpdateConsentPsuDataR
             return createFailedResponse(messageError, Collections.emptyList(), request);
         }
 
-        PsuIdData psuData = extractPsuIdData(request);
+        PsuIdData psuData = extractPsuIdData(request, authorisationResponse);
         AccountConsent accountConsent = accountConsentOptional.get();
 
         SpiAccountConsent spiAccountConsent = aisConsentMapper.mapToSpiAccountConsent(accountConsent);

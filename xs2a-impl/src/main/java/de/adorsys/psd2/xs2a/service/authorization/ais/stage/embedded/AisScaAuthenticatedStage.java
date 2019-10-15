@@ -21,6 +21,7 @@ import de.adorsys.psd2.xs2a.core.error.MessageErrorCode;
 import de.adorsys.psd2.xs2a.core.psu.PsuIdData;
 import de.adorsys.psd2.xs2a.core.sca.ScaStatus;
 import de.adorsys.psd2.xs2a.domain.consent.AccountConsent;
+import de.adorsys.psd2.xs2a.domain.consent.AccountConsentAuthorization;
 import de.adorsys.psd2.xs2a.domain.consent.UpdateConsentPsuDataReq;
 import de.adorsys.psd2.xs2a.domain.consent.UpdateConsentPsuDataResponse;
 import de.adorsys.psd2.xs2a.exception.MessageError;
@@ -48,7 +49,7 @@ import static de.adorsys.psd2.xs2a.domain.TppMessageInformation.of;
 
 @Slf4j
 @Service("AIS_SCAMETHODSELECTED")
-public class AisScaAuthenticatedStage extends AisScaStage<UpdateConsentPsuDataReq, UpdateConsentPsuDataResponse> {
+public class AisScaAuthenticatedStage extends AisScaStage<UpdateConsentPsuDataReq, AccountConsentAuthorization, UpdateConsentPsuDataResponse> {
 
     private final SpiContextDataProvider spiContextDataProvider;
     private final RequestProviderService requestProviderService;
@@ -76,7 +77,7 @@ public class AisScaAuthenticatedStage extends AisScaStage<UpdateConsentPsuDataRe
      * @return UpdateConsentPsuDataResponse as a result of updating process
      */
     @Override
-    public UpdateConsentPsuDataResponse apply(UpdateConsentPsuDataReq request) {
+    public UpdateConsentPsuDataResponse apply(UpdateConsentPsuDataReq request, AccountConsentAuthorization authorisationResponse) {
         String consentId = request.getConsentId();
         Optional<AccountConsent> accountConsentOptional = aisConsentService.getAccountConsentById(consentId);
 
@@ -88,7 +89,7 @@ public class AisScaAuthenticatedStage extends AisScaStage<UpdateConsentPsuDataRe
         }
         AccountConsent accountConsent = accountConsentOptional.get();
 
-        PsuIdData psuData = extractPsuIdData(request);
+        PsuIdData psuData = extractPsuIdData(request, authorisationResponse);
 
         SpiResponse<SpiVerifyScaAuthorisationResponse> spiResponse = aisConsentSpi.verifyScaAuthorisation(spiContextDataProvider.provideWithPsuIdData(psuData), aisConsentMapper.mapToSpiScaConfirmation(request, psuData), aisConsentMapper.mapToSpiAccountConsent(accountConsent), aspspConsentDataProviderFactory.getSpiAspspDataProviderFor(consentId));
 

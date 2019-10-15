@@ -99,7 +99,7 @@ public class PisScaAuthenticatedStage extends PisScaStage<Xs2aUpdatePisCommonPay
         String authenticationMethodId = request.getAuthenticationMethodId();
         String authorisationId = request.getAuthorisationId();
         String paymentId = request.getPaymentId();
-        PsuIdData psuData = extractPsuIdData(request, false);
+        PsuIdData psuData = extractPsuIdData(request, pisAuthorisationResponse);
         String psuId = psuData.getPsuId();
 
         SpiContextData contextData = spiContextDataProvider.provideWithPsuIdData(psuData);

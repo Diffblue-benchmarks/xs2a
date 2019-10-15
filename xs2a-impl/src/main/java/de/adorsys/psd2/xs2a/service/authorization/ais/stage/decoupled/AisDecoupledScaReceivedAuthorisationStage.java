@@ -22,6 +22,7 @@ import de.adorsys.psd2.xs2a.core.psu.PsuIdData;
 import de.adorsys.psd2.xs2a.core.sca.ScaStatus;
 import de.adorsys.psd2.xs2a.domain.TppMessageInformation;
 import de.adorsys.psd2.xs2a.domain.consent.AccountConsent;
+import de.adorsys.psd2.xs2a.domain.consent.AccountConsentAuthorization;
 import de.adorsys.psd2.xs2a.domain.consent.UpdateConsentPsuDataReq;
 import de.adorsys.psd2.xs2a.domain.consent.UpdateConsentPsuDataResponse;
 import de.adorsys.psd2.xs2a.exception.MessageError;
@@ -55,7 +56,7 @@ import static de.adorsys.psd2.xs2a.core.error.MessageErrorCode.*;
 
 @Slf4j
 @Service("AIS_DECOUPLED_RECEIVED")
-public class AisDecoupledScaReceivedAuthorisationStage extends AisScaStage<UpdateConsentPsuDataReq, UpdateConsentPsuDataResponse> {
+public class AisDecoupledScaReceivedAuthorisationStage extends AisScaStage<UpdateConsentPsuDataReq, AccountConsentAuthorization, UpdateConsentPsuDataResponse> {
 
     private final RequestProviderService requestProviderService;
     private final SpiContextDataProvider spiContextDataProvider;
@@ -81,13 +82,13 @@ public class AisDecoupledScaReceivedAuthorisationStage extends AisScaStage<Updat
     }
 
     @Override
-    public UpdateConsentPsuDataResponse apply(UpdateConsentPsuDataReq updateConsentPsuDataReq) {
+    public UpdateConsentPsuDataResponse apply(UpdateConsentPsuDataReq updateConsentPsuDataReq, AccountConsentAuthorization authorisationResponse) {
         return updateConsentPsuDataReq.isUpdatePsuIdentification()
                    ? applyIdentification(updateConsentPsuDataReq)
-                   : applyAuthorisation(updateConsentPsuDataReq);
+                   : applyAuthorisation(updateConsentPsuDataReq, authorisationResponse);
     }
 
-    private UpdateConsentPsuDataResponse applyAuthorisation(UpdateConsentPsuDataReq updateConsentPsuDataReq) {
+    private UpdateConsentPsuDataResponse applyAuthorisation(UpdateConsentPsuDataReq updateConsentPsuDataReq, AccountConsentAuthorization authorisationResponse) {
         String consentId = updateConsentPsuDataReq.getConsentId();
         Optional<AccountConsent> accountConsentOptional = aisConsentService.getAccountConsentById(consentId);
 
@@ -100,7 +101,7 @@ public class AisDecoupledScaReceivedAuthorisationStage extends AisScaStage<Updat
         AccountConsent accountConsent = accountConsentOptional.get();
 
         SpiAccountConsent spiAccountConsent = aisConsentMapper.mapToSpiAccountConsent(accountConsent);
-        PsuIdData psuData = extractPsuIdData(updateConsentPsuDataReq);
+        PsuIdData psuData = extractPsuIdData(updateConsentPsuDataReq, authorisationResponse);
 
 
         SpiContextData spiContextData = spiContextDataProvider.provideWithPsuIdData(psuData);

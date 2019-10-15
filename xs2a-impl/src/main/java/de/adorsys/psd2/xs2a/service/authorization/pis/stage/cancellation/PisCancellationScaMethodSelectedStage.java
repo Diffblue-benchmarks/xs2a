@@ -74,7 +74,7 @@ public class PisCancellationScaMethodSelectedStage extends PisScaStage<Xs2aUpdat
         PaymentType paymentType = pisAuthorisationResponse.getPaymentType();
         String paymentProduct = pisAuthorisationResponse.getPaymentProduct();
         SpiPayment payment = mapToSpiPayment(pisAuthorisationResponse, paymentType, paymentProduct);
-        PsuIdData psuData = extractPsuIdData(request, true);
+        PsuIdData psuData = extractPsuIdData(request, pisAuthorisationResponse);
         String authorisationId = request.getAuthorisationId();
         String paymentId = request.getPaymentId();
 

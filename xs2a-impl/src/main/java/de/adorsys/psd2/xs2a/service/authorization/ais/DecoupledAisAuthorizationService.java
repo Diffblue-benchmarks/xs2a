@@ -87,8 +87,8 @@ public class DecoupledAisAuthorizationService implements AisAuthorizationService
      */
     @Override
     public UpdateConsentPsuDataResponse updateConsentPsuData(UpdateConsentPsuDataReq updatePsuData, AccountConsentAuthorization consentAuthorization) {
-        AisScaStage<UpdateConsentPsuDataReq, UpdateConsentPsuDataResponse> service = scaStageAuthorisationFactory.getService(SERVICE_PREFIX + SEPARATOR + getScaApproachServiceType().name() + SEPARATOR + consentAuthorization.getScaStatus().name());
-        UpdateConsentPsuDataResponse response = service.apply(updatePsuData);
+        AisScaStage<UpdateConsentPsuDataReq, AccountConsentAuthorization, UpdateConsentPsuDataResponse> service = scaStageAuthorisationFactory.getService(SERVICE_PREFIX + SEPARATOR + getScaApproachServiceType().name() + SEPARATOR + consentAuthorization.getScaStatus().name());
+        UpdateConsentPsuDataResponse response = service.apply(updatePsuData, consentAuthorization);
 
         if (response.hasError()) {
             log.info("InR-ID: [{}], X-Request-ID: [{}], Consent-ID [{}], Authentication-ID [{}], PSU-ID [{}]. Update consent authorisation has failed. Error msg: {}.",

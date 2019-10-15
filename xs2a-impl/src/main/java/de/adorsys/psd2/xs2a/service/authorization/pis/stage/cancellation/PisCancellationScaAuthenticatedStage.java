@@ -101,7 +101,7 @@ public class PisCancellationScaAuthenticatedStage extends PisScaStage<Xs2aUpdate
         String authenticationMethodId = request.getAuthenticationMethodId();
         String authorisationId = request.getAuthorisationId();
         String paymentId = request.getPaymentId();
-        PsuIdData psuData = extractPsuIdData(request, true);
+        PsuIdData psuData = extractPsuIdData(request, pisAuthorisationResponse);
         SpiContextData spiContextData = spiContextDataProvider.provideWithPsuIdData(psuData);
 
         SpiAspspConsentDataProvider spiAspspConsentDataProvider = aspspConsentDataProviderFactory.getSpiAspspDataProviderFor(request.getPaymentId());
