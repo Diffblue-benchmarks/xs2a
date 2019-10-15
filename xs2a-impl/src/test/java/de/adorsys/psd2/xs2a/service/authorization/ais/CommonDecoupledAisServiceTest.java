@@ -161,7 +161,6 @@ public class CommonDecoupledAisServiceTest {
         // Then
         String actualMethodId = actualResponse.getChosenScaMethod().getAuthenticationMethodId();
         assertThat(actualMethodId).isEqualTo(AUTHENTICATION_METHOD_ID);
-        assertThat(actualResponse.getChosenScaMethodForPsd2Response()).isNull();
     }
 
     // Needed because SpiResponse is final, so it's impossible to mock it

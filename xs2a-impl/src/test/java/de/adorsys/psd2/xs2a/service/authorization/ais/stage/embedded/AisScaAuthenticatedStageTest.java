@@ -146,7 +146,6 @@ public class AisScaAuthenticatedStageTest {
         UpdateConsentPsuDataResponse actualResponse = scaAuthenticatedStage.apply(request);
 
         assertThat(actualResponse).isNotNull();
-        assertThat(actualResponse.getScaAuthenticationData()).isEqualTo(TEST_AUTHENTICATION_DATA);
         assertThat(actualResponse.getScaStatus()).isEqualTo(FINALIZED_SCA_STATUS);
     }
 
@@ -199,7 +198,6 @@ public class AisScaAuthenticatedStageTest {
         UpdateConsentPsuDataResponse actualResponse = scaAuthenticatedStage.apply(request);
 
         assertThat(actualResponse).isNotNull();
-        assertThat(actualResponse.getScaAuthenticationData()).isEqualTo(TEST_AUTHENTICATION_DATA);
         assertThat(actualResponse.getScaStatus()).isEqualTo(FINALIZED_SCA_STATUS);
 
         verify(aisConsentService).updateMultilevelScaRequired(CONSENT_ID, true);
@@ -222,7 +220,6 @@ public class AisScaAuthenticatedStageTest {
         UpdateConsentPsuDataResponse actualResponse = scaAuthenticatedStage.apply(request);
 
         assertThat(actualResponse).isNotNull();
-        assertThat(actualResponse.getScaAuthenticationData()).isEqualTo(TEST_AUTHENTICATION_DATA);
         assertThat(actualResponse.getScaStatus()).isEqualTo(FINALIZED_SCA_STATUS);
 
         verify(aisConsentService, never()).updateMultilevelScaRequired(CONSENT_ID, true);
@@ -248,7 +245,6 @@ public class AisScaAuthenticatedStageTest {
         UpdateConsentPsuDataResponse actualResponse = scaAuthenticatedStage.apply(request);
 
         assertThat(actualResponse).isNotNull();
-        assertThat(actualResponse.getScaAuthenticationData()).isEqualTo(TEST_AUTHENTICATION_DATA);
         assertThat(actualResponse.getScaStatus()).isEqualTo(FINALIZED_SCA_STATUS);
 
         verify(aisConsentService).updateConsentStatus(CONSENT_ID, VALID_CONSENT_STATUS);
@@ -271,7 +267,6 @@ public class AisScaAuthenticatedStageTest {
         UpdateConsentPsuDataResponse actualResponse = scaAuthenticatedStage.apply(request);
 
         assertThat(actualResponse).isNotNull();
-        assertThat(actualResponse.getScaAuthenticationData()).isEqualTo(TEST_AUTHENTICATION_DATA);
         assertThat(actualResponse.getScaStatus()).isEqualTo(FINALIZED_SCA_STATUS);
 
         verify(aisConsentService, never()).updateConsentStatus(CONSENT_ID, PARTIALLY_AUTHORISED_CONSENT_STATUS);

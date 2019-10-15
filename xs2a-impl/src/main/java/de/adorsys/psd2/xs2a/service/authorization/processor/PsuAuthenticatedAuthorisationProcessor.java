@@ -27,11 +27,12 @@ public class PsuAuthenticatedAuthorisationProcessor extends AuthorisationProcess
     }
 
     @Override
-    public void process(AuthorisationProcessorRequest request) {
+    public AuthorisationProcessorResponse process(AuthorisationProcessorRequest request) {
         if (ScaStatus.PSUAUTHENTICATED == request.getScaStatus()) {
             System.out.println("scaStatus = " + request.getScaStatus());
         } else {
             nextProcessor.process(request);
         }
+        return null;
     }
 }

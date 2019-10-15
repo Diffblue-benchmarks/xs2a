@@ -128,9 +128,7 @@ public class AisDecoupledScaReceivedAuthorisationStage extends AisScaStage<Updat
         if (aisScaAuthorisationService.isOneFactorAuthorisation(accountConsent)) {
             aisConsentService.updateConsentStatus(consentId, ConsentStatus.VALID);
 
-            UpdateConsentPsuDataResponse response = new UpdateConsentPsuDataResponse(ScaStatus.FINALISED, consentId, updateConsentPsuDataReq.getAuthorizationId());
-            response.setScaAuthenticationData(updateConsentPsuDataReq.getScaAuthenticationData());
-            return response;
+            return new UpdateConsentPsuDataResponse(ScaStatus.FINALISED, consentId, updateConsentPsuDataReq.getAuthorizationId());
         }
 
         return commonDecoupledAisService.proceedDecoupledApproach(updateConsentPsuDataReq, spiAccountConsent, psuData);

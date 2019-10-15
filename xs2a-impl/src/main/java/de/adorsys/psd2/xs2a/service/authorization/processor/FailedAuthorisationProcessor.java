@@ -27,11 +27,12 @@ public class FailedAuthorisationProcessor extends AuthorisationProcessor {
     }
 
     @Override
-    public void process(AuthorisationProcessorRequest request) {
+    public AuthorisationProcessorResponse process(AuthorisationProcessorRequest request) {
         if (ScaStatus.FAILED == request.getScaStatus()) {
             System.out.println("scaStatus = " + request.getScaStatus());
         } else {
             nextProcessor.process(request);
         }
+        return null;
     }
 }

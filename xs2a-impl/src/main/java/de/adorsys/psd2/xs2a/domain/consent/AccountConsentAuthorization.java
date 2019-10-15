@@ -24,12 +24,13 @@ import lombok.Data;
 @Data
 public class AccountConsentAuthorization {
     private String id;
-    private String consentId;
-    private PsuIdData psuIdData;
 
+    private String consentId;
+
+    private PsuIdData psuIdData;
     private ScaStatus scaStatus;
+    private String password;
     private String authenticationMethodId;
     private String scaAuthenticationData;
-    private String password;
     private ScaApproach chosenScaApproach;
 }

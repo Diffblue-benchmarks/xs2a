@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-package de.adorsys.psd2.xs2a.domain.consent.pis;
+package de.adorsys.psd2.xs2a.service.authorization.processor;
 
-import de.adorsys.psd2.xs2a.core.psu.PsuIdData;
 import de.adorsys.psd2.xs2a.core.sca.ChallengeData;
 import de.adorsys.psd2.xs2a.core.sca.ScaStatus;
 import de.adorsys.psd2.xs2a.domain.ErrorHolder;
@@ -25,16 +24,16 @@ import de.adorsys.psd2.xs2a.domain.authorisation.AuthorisationResponse;
 import de.adorsys.psd2.xs2a.domain.authorisation.AuthorisationResponseType;
 import de.adorsys.psd2.xs2a.domain.authorisation.CancellationAuthorisationResponse;
 import de.adorsys.psd2.xs2a.domain.consent.Xs2aAuthenticationObject;
+import de.adorsys.psd2.xs2a.exception.MessageError;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
 @Data
-@NoArgsConstructor
-public class Xs2aUpdatePisCommonPaymentPsuDataResponse implements AuthorisationResponse, CancellationAuthorisationResponse {
+public class AuthorisationProcessorResponse implements AuthorisationResponse, CancellationAuthorisationResponse {
 
+    private String consentId;
     private String paymentId;
     private String authorisationId;
 
@@ -42,26 +41,13 @@ public class Xs2aUpdatePisCommonPaymentPsuDataResponse implements AuthorisationR
     private List<Xs2aAuthenticationObject> availableScaMethods;
     private Xs2aAuthenticationObject chosenScaMethod;
     private ChallengeData challengeData;
-    private Links links = new Links();
+    private Links links;
     private String psuMessage;
-    private PsuIdData psuData;
 
-    private ErrorHolder errorHolder;
-
-    public Xs2aUpdatePisCommonPaymentPsuDataResponse(ScaStatus scaStatus, String paymentId, String authorisationId, PsuIdData psuData) {
-        this.scaStatus = scaStatus;
-        this.paymentId = paymentId;
-        this.authorisationId = authorisationId;
-        this.psuData = psuData;
-    }
-
-    public Xs2aUpdatePisCommonPaymentPsuDataResponse(ErrorHolder errorHolder, String paymentId, String authorisationId, PsuIdData psuData) {
-        this(ScaStatus.FAILED, paymentId, authorisationId, psuData);
-        this.errorHolder = errorHolder;
-    }
+    private MessageError messageError;
 
     public boolean hasError() {
-        return errorHolder != null;
+        return messageError != null;
     }
 
     @NotNull
@@ -70,10 +56,10 @@ public class Xs2aUpdatePisCommonPaymentPsuDataResponse implements AuthorisationR
         return authorisationId;
     }
 
+    // TODO: 2019-10-15 remove it
     @NotNull
     @Override
     public AuthorisationResponseType getAuthorisationResponseType() {
         return AuthorisationResponseType.UPDATE;
     }
 }
-

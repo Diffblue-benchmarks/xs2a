@@ -19,6 +19,7 @@ package de.adorsys.psd2.xs2a.service.authorization.processor;
 public abstract class AuthorisationProcessor {
 
     public abstract void setNext(AuthorisationProcessor nextProcessor);
-    public abstract void process(AuthorisationProcessorRequest request);
+
+    public abstract AuthorisationProcessorResponse process(AuthorisationProcessorRequest request);
 
 }

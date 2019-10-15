@@ -138,9 +138,7 @@ public class AisScaReceivedAuthorisationStage extends AisScaStage<UpdateConsentP
         if (aisScaAuthorisationService.isOneFactorAuthorisation(accountConsent)) {
             aisConsentService.updateConsentStatus(consentId, ConsentStatus.VALID);
 
-            UpdateConsentPsuDataResponse response = new UpdateConsentPsuDataResponse(ScaStatus.FINALISED, consentId, authorisationId);
-            response.setScaAuthenticationData(request.getScaAuthenticationData());
-            return response;
+            return new UpdateConsentPsuDataResponse(ScaStatus.FINALISED, consentId, authorisationId);
         }
 
         SpiResponse<SpiAvailableScaMethodsResponse> spiResponse = aisConsentSpi.requestAvailableScaMethods(spiContextDataProvider.provideWithPsuIdData(psuData), spiAccountConsent, aspspConsentDataProviderFactory.getSpiAspspDataProviderFor(consentId));

@@ -110,8 +110,6 @@ public class AisScaAuthenticatedStage extends AisScaStage<UpdateConsentPsuDataRe
         }
         aisConsentService.findAndTerminateOldConsentsByNewConsentId(consentId);
 
-        UpdateConsentPsuDataResponse response = new UpdateConsentPsuDataResponse(ScaStatus.FINALISED, consentId, request.getAuthorizationId());
-        response.setScaAuthenticationData(request.getScaAuthenticationData());
-        return response;
+        return new UpdateConsentPsuDataResponse(ScaStatus.FINALISED, consentId, request.getAuthorizationId());
     }
 }

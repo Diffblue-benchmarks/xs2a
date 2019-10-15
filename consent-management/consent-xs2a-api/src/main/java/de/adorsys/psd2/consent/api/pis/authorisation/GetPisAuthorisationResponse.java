@@ -28,12 +28,14 @@ import java.util.List;
 
 @Data
 public class GetPisAuthorisationResponse {
+    private String paymentId;
+
     private PsuIdData psuIdData;
     private ScaStatus scaStatus;
-    private String paymentId;
     private String password;
-    private List<PisPayment> payments;
+
     private PaymentType paymentType;
+    private List<PisPayment> payments;
     private String paymentProduct;
     private PisPaymentInfo paymentInfo;
     private ScaApproach chosenScaApproach;

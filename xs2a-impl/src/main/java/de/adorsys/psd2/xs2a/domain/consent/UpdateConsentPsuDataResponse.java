@@ -36,11 +36,8 @@ public class UpdateConsentPsuDataResponse implements AuthorisationResponse {
     private List<Xs2aAuthenticationObject> availableScaMethods;
     private Xs2aAuthenticationObject chosenScaMethod;
     private ChallengeData challengeData;
-    private String authenticationMethodId;
-    private String scaAuthenticationData;
     private Links links;
     private String psuMessage;
-    private String internalRequestId;
 
     private MessageError messageError;
 
@@ -52,14 +49,5 @@ public class UpdateConsentPsuDataResponse implements AuthorisationResponse {
 
     public boolean hasError() {
         return messageError != null;
-    }
-
-    /**
-     * Returns chosenScaMethod. Should be used ONLY for mapping to PSD2 response.
-     *
-     * @return chosenScaMethod
-     */
-    public Xs2aAuthenticationObject getChosenScaMethodForPsd2Response() {
-        return getChosenScaMethod();
     }
 }

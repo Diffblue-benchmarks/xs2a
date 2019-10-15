@@ -47,4 +47,9 @@ public class Xs2aUpdatePisCommonPaymentPsuDataRequest implements UpdateAuthorisa
         this.paymentProduct = createRequest.getPaymentProduct();
         this.password = createRequest.getPassword();
     }
+
+    @Override
+    public String getBusynessObjectId() {
+        return paymentId;
+    }
 }
