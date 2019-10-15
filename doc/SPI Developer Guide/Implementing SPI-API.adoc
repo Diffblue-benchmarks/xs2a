@@ -47,7 +47,7 @@ Another parameter in *SpiContextData* is the *tppInfo*. It contains information 
 ** "TPP name": example = "Tpp company";
 ** "National competent authority": example = "Bafin";
 
-Also, this object stores the string parameter *authorisation* - this is the authorisation header that should be present
+Also, SpiContextData object stores the string parameter *authorisation* - this is the authorisation header that should be present
 in any XS2A request during OAuth SCA approach. This header is passed to SPI level in each method.
 
 The response from the connector to XS2A and the ASPSP consent data provider are described in the next chapters.
