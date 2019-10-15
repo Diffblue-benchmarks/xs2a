@@ -1,3 +1,21 @@
 = Release notes v.5.3
 
 == Table of Contents
+
+* Feature: Extend CMS to store SCA method and TAN for Redirect approach
+
+== Feature: Extend CMS to store SCA method and TAN for Redirect approach
+
+From now on, there is a possibility for online banking to send optional SCA method and optional authentication data (e.g. TAN) in CMS-PSU-API update authorisation status request (`PUT /psu-api/v1/payment/{payment-id}/authorisation/{authorisation-id}/status/{status}`
+for payments and `PUT /psu-api/v1/ais/consent/{consent-id}/authorisation/{authorisation-id}/status/{status}` for AIS consents).
+Data should be sent in JSON format:
+
+[source,json]
+----
+{
+	"authenticationMethodId": "SMS",
+	"authenticationData": "123456"
+}
+----
+
+Both fields are stored in CMS in 'ais_consent_authorization' and `pis_consent_authorization` tables.
