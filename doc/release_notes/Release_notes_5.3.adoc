@@ -1,3 +1,10 @@
 = Release notes v.5.3
 
 == Table of Contents
+
+* Save payment transaction status given by ASPSP
+
+== Save payment transaction status given by ASPSP
+
+From now on there is new endpoint in `cms-aspsp-api`: `PUT /aspsp-api/v1/pis/transaction-status/{payment-id}/status/{status}`,
+where you can change payment's transaction status by payment id even if it is already finalised.
