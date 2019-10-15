@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(path = "aspsp-api/v1/pis/transaction-status")
-@Api(value = "aspsp-api/v1/pis/transaction-status", tags = {"PSU PIS Payment"})
+@Api(value = "aspsp-api/v1/pis/transaction-status", tags = {"ASPSP PSI Transaction Status"})
 public class CmsAspspPisTransactionController {
     private static final String DEFAULT_SERVICE_INSTANCE_ID = "UNDEFINED";
 
